@@ -8,7 +8,7 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 
-namespace TestService
+namespace DemoService
 {
     public partial class Service1 : ServiceBase
     {

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceProcess.Helpers", "WindowsServiceHelper\ServiceProcess.Helpers.csproj", "{59BC7605-809F-4420-B2B6-72C4B9F48907}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestService", "TestService\TestService.csproj", "{A9D807B7-8496-4A9F-8309-2708F10C431B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoService", "TestService\DemoService.csproj", "{A9D807B7-8496-4A9F-8309-2708F10C431B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -5,7 +5,7 @@ using System.ServiceProcess;
 using System.Text;
 using ServiceProcess.Helpers;
 
-namespace TestService
+namespace DemoService
 {
     static class Program
     {
