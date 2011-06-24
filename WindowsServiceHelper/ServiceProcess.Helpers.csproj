@@ -126,11 +126,8 @@
     <Resource Include="Images\spinner.gif" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\control_pause.png" />
     <Resource Include="Images\control_pause_blue.png" />
-    <Resource Include="Images\control_play.png" />
     <Resource Include="Images\control_play_blue.png" />
-    <Resource Include="Images\control_stop.png" />
     <Resource Include="Images\control_stop_blue.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
