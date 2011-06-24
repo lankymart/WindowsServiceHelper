@@ -6,14 +6,37 @@
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type Image}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Button}, AncestorLevel=1}, Path=IsEnabled}"
+                             Value="False">
+                    <Setter Property="Opacity"
+                            Value="0.50"></Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <DockPanel>
-        
-        <ToolBar DockPanel.Dock="Top">
-            <Button Command="{Binding StartCommand}">Start</Button>
-            <Button Command="{Binding StopCommand}">Stop</Button>
-            <Button Command="{Binding PauseCommand}">Pause</Button>
-        </ToolBar>
 
+        <ToolBar DockPanel.Dock="Top">
+            <Button Command="{Binding StartCommand}">
+                <Image Width="32"
+                       Height="32"
+                       Source="/ServiceProcess.Helpers;component/Images/control_play_blue.png" />
+            </Button>
+            <Button Command="{Binding PauseCommand}">
+                <Image Width="32"
+                       Height="32"
+                       Source="/ServiceProcess.Helpers;component/Images/control_pause_blue.png" />
+            </Button>
+            <Button Command="{Binding StopCommand}">
+                <Image Width="32"
+                       Height="32"
+                       Source="/ServiceProcess.Helpers;component/Images/control_stop_blue.png" />
+            </Button>
+
+        </ToolBar>
         <ListView ItemsSource="{Binding Services}"
                   SelectedItem="{Binding SelectedService}" />
     </DockPanel>

@@ -59,7 +59,7 @@ namespace ServiceProcess.Helpers.Helpers
             ReplaySubject<ServiceState> result = new ReplaySubject<ServiceState>();
             result.OnNext(operation.InitialState);
 
-            var t = Task.Factory.StartNew(() =>
+            var methodObs = Observable.Start(() =>
                 {
                     Type serviceBaseType = serviceBase.GetType();
                     object[] parameters = null;
@@ -78,7 +78,6 @@ namespace ServiceProcess.Helpers.Helpers
                     }
                 });
 
-            var methodObs = t.ToObservable();
 
             methodObs.Subscribe
                 (

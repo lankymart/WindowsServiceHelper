@@ -67,6 +67,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\GifImage.cs" />
     <Compile Include="Helpers\StaTaskScheduler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -103,7 +104,6 @@
     </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Page Include="App.xaml">
       <SubType>Designer</SubType>
@@ -121,6 +121,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\spinner.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\control_pause.png" />
+    <Resource Include="Images\control_pause_blue.png" />
+    <Resource Include="Images\control_play.png" />
+    <Resource Include="Images\control_play_blue.png" />
+    <Resource Include="Images\control_stop.png" />
+    <Resource Include="Images\control_stop_blue.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

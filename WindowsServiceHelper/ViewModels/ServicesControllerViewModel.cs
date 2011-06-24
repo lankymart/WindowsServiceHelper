@@ -23,23 +23,53 @@ namespace ServiceProcess.Helpers.ViewModels
         public ReactiveCommand StartCommand { get; private set; }
         public ReactiveCommand PauseCommand { get; private set; }
         public ReactiveCommand StopCommand { get; private set; }
-        public ReactiveCommand ContinueCommand { get; private set; }
 
         public ServicesControllerViewModel(IEnumerable<ServiceBase> services)
         {
             Services = services.Select(s => new ServiceViewModel(s)).ToList();
-
+            
             var selectedServiceObs = this.ObservableForProperty(x => x.SelectedService).Value();
 
-            StartCommand = new ReactiveCommand(selectedServiceObs.SelectMany(s => s.StartCommand.CanExecuteObservable));
+            //Combine the latest value from either the start or continue executes
+            //to determine if you can press the "play" button
+            StartCommand = new ReactiveCommand
+            (
+                selectedServiceObs.SelectMany
+                (
+                    s => s.StartCommand.CanExecuteObservable
+                        .CombineLatest
+                        (
+                            s.ContinueCommand.CanExecuteObservable, 
+                            (l,r) => l || r
+                        )
+                )
+            );
+
             StopCommand = new ReactiveCommand(selectedServiceObs.SelectMany(s => s.StopCommand.CanExecuteObservable));
             PauseCommand = new ReactiveCommand(selectedServiceObs.SelectMany(s => s.PauseCommand.CanExecuteObservable));
-            ContinueCommand = new ReactiveCommand(selectedServiceObs.SelectMany(s => s.ContinueCommand.CanExecuteObservable));
 
-            StartCommand.Subscribe(_ => SelectedService.StartCommand.Execute(null));
+            //TODO: create an observable that returns the play or continue command (or null) depending on the situation
+            //That ternary is pretty ugly
+            StartCommand.Subscribe
+            (
+                _ =>
+                {
+                    var command = (SelectedService.StartCommand.CanExecute(null) ? 
+                                    SelectedService.StartCommand : 
+                                    SelectedService.ContinueCommand.CanExecute(null) ? 
+                                        SelectedService.ContinueCommand : 
+                                        null);
+                    if (command != null)
+                    {
+                        command.Execute(null);
+                    }
+                }
+            );
+
             StopCommand.Subscribe(_ => SelectedService.StopCommand.Execute(null));
             PauseCommand.Subscribe(_ => SelectedService.PauseCommand.Execute(null));
-            ContinueCommand.Subscribe(_ => SelectedService.ContinueCommand.Execute(null));
+
+            SelectedService = Services.FirstOrDefault();
         }
         
     }
