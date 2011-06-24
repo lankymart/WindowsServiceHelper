@@ -18,9 +18,18 @@ namespace ServiceProcess.Helpers.ViewModels
         public ReactiveCommand PauseCommand { get; private set; }
         public ReactiveCommand StopCommand { get; private set; }
         public ReactiveCommand ContinueCommand { get; private set; }
-
-
+        
         public string Name { get; private set; }
+        
+        private bool _IsBusy = false;
+        public bool IsBusy 
+        { 
+            get { return _IsBusy; } 
+            set 
+            { 
+                this.RaiseAndSetIfChanged(x => x.IsBusy, value); 
+            } 
+        }
 
         private ServiceState _CurrentState = ServiceState.Stopped;
         public ServiceState CurrentState
@@ -33,10 +42,21 @@ namespace ServiceProcess.Helpers.ViewModels
         {
             Name = service.ServiceName;
 
-            var currentStateObs = this.ObservableForProperty(x => x.CurrentState).Select(c => c.GetValue());
+            //Get an observable for the current state
+            var currentStateObs = this.ObservableForProperty(x => x.CurrentState).Value();
+
+            //Map an observable to IsBusy that is True if the current state is *ing
+
+            currentStateObs.Select
+            (
+                s => s == ServiceState.Pausing ||
+                     s == ServiceState.Starting ||
+                     s == ServiceState.Stopping
+            )
+            .Subscribe(s => IsBusy = s);
 
             StartCommand = new ReactiveCommand(currentStateObs.Select(s => s == ServiceState.Stopped));
-            StopCommand = new ReactiveCommand(currentStateObs.Select(s => s == ServiceState.Started));
+            StopCommand = new ReactiveCommand(currentStateObs.Select(s => s == ServiceState.Started || s == ServiceState.Paused));
             PauseCommand = new ReactiveCommand(currentStateObs.Select(s => s == ServiceState.Started && service.CanPauseAndContinue));
             ContinueCommand = new ReactiveCommand(currentStateObs.Select(s => s == ServiceState.Paused && service.CanPauseAndContinue));
 
@@ -52,9 +72,9 @@ namespace ServiceProcess.Helpers.ViewModels
             command.SelectMany(_ => serviceOperation().SubscribeOnDispatcher())
                     .Subscribe
                     (
-                        s => CurrentState = s, 
+                        s => CurrentState = s,
                         ex => MessageBox.Show(ex.ToString())
-                    );        
+                    );
         }
 
     }

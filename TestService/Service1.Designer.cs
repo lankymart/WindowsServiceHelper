@@ -31,6 +31,7 @@
             // 
             // Service1
             // 
+            this.CanPauseAndContinue = true;
             this.ServiceName = "Test Service 1";
 
         }
