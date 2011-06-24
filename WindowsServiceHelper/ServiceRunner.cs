@@ -28,6 +28,7 @@ namespace ServiceProcess.Helpers
                         app.Startup += (o, e) =>
                             {
                                 Window window = new Window();
+                                window.Title = "Windows Service Runner";
                                 window.Content = new ServicesControllerViewModel(services);
                                 window.Show();
                             };

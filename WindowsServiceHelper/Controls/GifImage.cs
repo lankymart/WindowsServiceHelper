@@ -11,7 +11,7 @@ using System.Windows.Media;
 namespace ServiceProcess.Helpers.Controls
 {
     //Adapted from: http://stackoverflow.com/questions/210922/how-do-i-get-an-animated-gif-to-work-in-wpf/1134340#1134340
-    public class GifImage : Image
+    internal class GifImage : Image
     {
 
         public int FrameIndex

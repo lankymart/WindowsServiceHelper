@@ -13,7 +13,7 @@ using System.Linq;
 namespace System.Threading.Tasks.Schedulers
 {
     /// <summary>Provides a scheduler that uses STA threads.</summary>
-    public sealed class StaTaskScheduler : TaskScheduler, IDisposable
+    internal sealed class StaTaskScheduler : TaskScheduler, IDisposable
     {
         /// <summary>Stores the queued tasks to be executed by our pool of STA threads.</summary>
         private BlockingCollection<Task> _tasks;

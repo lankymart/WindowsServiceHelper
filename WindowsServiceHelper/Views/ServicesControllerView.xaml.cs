@@ -17,7 +17,7 @@ namespace ServiceProcess.Helpers.Views
     /// <summary>
     /// Interaction logic for ServicesControllerView.xaml
     /// </summary>
-    public partial class ServicesControllerView : UserControl
+    internal partial class ServicesControllerView : UserControl
     {
         public ServicesControllerView()
         {
