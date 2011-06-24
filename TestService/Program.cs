@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
+﻿using System.ServiceProcess;
 using ServiceProcess.Helpers;
 
 namespace DemoService
@@ -20,6 +16,8 @@ namespace DemoService
 			{ 
 				new Service1() 
 			};
+           
+            //ServiceBase.Run(ServicesToRun);
             ServicesToRun.LoadServices();
         }
     }
