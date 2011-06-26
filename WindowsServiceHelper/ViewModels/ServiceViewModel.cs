@@ -18,17 +18,17 @@ namespace ServiceProcess.Helpers.ViewModels
         public ReactiveCommand PauseCommand { get; private set; }
         public ReactiveCommand StopCommand { get; private set; }
         public ReactiveCommand ContinueCommand { get; private set; }
-        
+
         public string Name { get; private set; }
-        
+
         private bool _IsBusy = false;
-        public bool IsBusy 
-        { 
-            get { return _IsBusy; } 
-            set 
-            { 
-                this.RaiseAndSetIfChanged(x => x.IsBusy, value); 
-            } 
+        public bool IsBusy
+        {
+            get { return _IsBusy; }
+            set
+            {
+                this.RaiseAndSetIfChanged(x => x.IsBusy, value);
+            }
         }
 
         private ServiceState _CurrentState = ServiceState.Stopped;
@@ -60,7 +60,10 @@ namespace ServiceProcess.Helpers.ViewModels
             PauseCommand = new ReactiveCommand(currentStateObs.Select(s => s == ServiceState.Started && service.CanPauseAndContinue));
             ContinueCommand = new ReactiveCommand(currentStateObs.Select(s => s == ServiceState.Paused && service.CanPauseAndContinue));
 
-            AssignmentSubscription(StartCommand, () => ServiceBaseHelpers.StartService(service));
+            AssignmentSubscription(StartCommand, () => 
+                {
+                    return ServiceBaseHelpers.StartService(service);
+                });
             AssignmentSubscription(StopCommand, () => ServiceBaseHelpers.StopService(service));
             AssignmentSubscription(PauseCommand, () => ServiceBaseHelpers.PauseService(service));
             AssignmentSubscription(ContinueCommand, () => ServiceBaseHelpers.ContinueService(service));
@@ -69,12 +72,23 @@ namespace ServiceProcess.Helpers.ViewModels
 
         private void AssignmentSubscription(ReactiveCommand command, Func<IObservable<ServiceState>> serviceOperation)
         {
-            command.SelectMany(_ => serviceOperation().SubscribeOnDispatcher())
+            command.Subscribe
+            (
+                _ => serviceOperation()
+                    .SubscribeOnDispatcher()
                     .Subscribe
                     (
-                        s => CurrentState = s,
-                        ex => MessageBox.Show(ex.ToString())
-                    );
+                        s =>
+                        {
+                            CurrentState = s;
+                        },
+                        ex =>
+                        {
+                            MessageBox.Show(ex.ToString());
+                        }
+                    )
+            );
+            
         }
 
     }
