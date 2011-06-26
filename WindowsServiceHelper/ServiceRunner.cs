@@ -29,7 +29,7 @@ namespace ServiceProcess.Helpers
                             {
                                 Window window = new Window();
                                 window.Title = "Windows Service Runner";
-                                window.Content = new ServicesControllerViewModel(services);
+                                window.Content = new ServicesControllerViewModel(services.Select(s => new ServiceViewModel(s)).ToList());
                                 window.Show();
                             };
                         app.Run();

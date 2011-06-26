@@ -24,9 +24,9 @@ namespace ServiceProcess.Helpers.ViewModels
         public ReactiveCommand PauseCommand { get; private set; }
         public ReactiveCommand StopCommand { get; private set; }
 
-        public ServicesControllerViewModel(IEnumerable<ServiceBase> services)
+        public ServicesControllerViewModel(IEnumerable<ServiceViewModel> serviceViewModels)
         {
-            Services = services.Select(s => new ServiceViewModel(s)).ToList();
+            Services = serviceViewModels;
             
             var selectedServiceObs = this.ObservableForProperty(x => x.SelectedService).Value();
 
