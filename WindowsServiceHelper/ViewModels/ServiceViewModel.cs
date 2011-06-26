@@ -46,7 +46,6 @@ namespace ServiceProcess.Helpers.ViewModels
             var currentStateObs = this.ObservableForProperty(x => x.CurrentState).Value();
 
             //Map an observable to IsBusy that is True if the current state is *ing
-
             currentStateObs.Select
             (
                 s => s == ServiceState.Pausing ||
@@ -60,10 +59,7 @@ namespace ServiceProcess.Helpers.ViewModels
             PauseCommand = new ReactiveCommand(currentStateObs.Select(s => s == ServiceState.Started && service.CanPauseAndContinue));
             ContinueCommand = new ReactiveCommand(currentStateObs.Select(s => s == ServiceState.Paused && service.CanPauseAndContinue));
 
-            AssignmentSubscription(StartCommand, () => 
-                {
-                    return ServiceBaseHelpers.StartService(service);
-                });
+            AssignmentSubscription(StartCommand, () => ServiceBaseHelpers.StartService(service));
             AssignmentSubscription(StopCommand, () => ServiceBaseHelpers.StopService(service));
             AssignmentSubscription(PauseCommand, () => ServiceBaseHelpers.PauseService(service));
             AssignmentSubscription(ContinueCommand, () => ServiceBaseHelpers.ContinueService(service));
@@ -72,6 +68,8 @@ namespace ServiceProcess.Helpers.ViewModels
 
         private void AssignmentSubscription(ReactiveCommand command, Func<IObservable<ServiceState>> serviceOperation)
         {
+            //with each firing of the command, create a new observable for the operation
+            //and subscribe to state changes
             command.Subscribe
             (
                 _ => serviceOperation()
@@ -84,6 +82,7 @@ namespace ServiceProcess.Helpers.ViewModels
                         },
                         ex =>
                         {
+                            //TODO: show something more servicable than a MessageBox? Something that scrolls, maybe.
                             MessageBox.Show(ex.ToString());
                         }
                     )
