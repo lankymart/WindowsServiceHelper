@@ -28,6 +28,8 @@ namespace ServiceProcess.Helpers
                         app.Startup += (o, e) =>
                             {
                                 Window window = new Window();
+                                window.Width = 350;
+                                window.Height = 200;
                                 window.Title = "Windows Service Runner";
                                 window.Content = new ServicesControllerViewModel(services.Select(s => new ServiceViewModel(s)).ToList());
                                 window.Show();
