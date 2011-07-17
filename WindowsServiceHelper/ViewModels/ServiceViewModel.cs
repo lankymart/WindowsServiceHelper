@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Reactive.Linq;
+using System.ServiceProcess;
+using System.Windows;
 using ReactiveUI;
 using ReactiveUI.Xaml;
-using System.ServiceProcess;
-using ServiceProcess.Helpers;
-using System.Reactive.Linq;
-using System.Windows;
 using ServiceProcess.Helpers.Helpers;
 
 namespace ServiceProcess.Helpers.ViewModels
@@ -43,7 +39,7 @@ namespace ServiceProcess.Helpers.ViewModels
             Name = service.ServiceName;
 
             //Get an observable for the current state
-            var currentStateObs = this.ObservableForProperty(x => x.CurrentState).Value();
+            var currentStateObs = this.ObservableForProperty(x => x.CurrentState).Value().StartWith(ServiceState.Stopped);
 
             //Map an observable to IsBusy that is True if the current state is *ing
             currentStateObs.Select
@@ -52,18 +48,17 @@ namespace ServiceProcess.Helpers.ViewModels
                      s == ServiceState.Starting ||
                      s == ServiceState.Stopping
             )
-            .Subscribe(s => IsBusy = s);
+            .Subscribe(busy => IsBusy = busy);
 
-            StartCommand = new ReactiveCommand(currentStateObs.Select(s => s == ServiceState.Stopped));
-            StopCommand = new ReactiveCommand(currentStateObs.Select(s => s == ServiceState.Started || s == ServiceState.Paused));
-            PauseCommand = new ReactiveCommand(currentStateObs.Select(s => s == ServiceState.Started && service.CanPauseAndContinue));
+            StartCommand    = new ReactiveCommand(currentStateObs.Select(s => s == ServiceState.Stopped));
+            StopCommand     = new ReactiveCommand(currentStateObs.Select(s => s == ServiceState.Started || s == ServiceState.Paused));
+            PauseCommand    = new ReactiveCommand(currentStateObs.Select(s => s == ServiceState.Started && service.CanPauseAndContinue));
             ContinueCommand = new ReactiveCommand(currentStateObs.Select(s => s == ServiceState.Paused && service.CanPauseAndContinue));
 
-            AssignmentSubscription(StartCommand, () => ServiceBaseHelpers.StartService(service));
-            AssignmentSubscription(StopCommand, () => ServiceBaseHelpers.StopService(service));
-            AssignmentSubscription(PauseCommand, () => ServiceBaseHelpers.PauseService(service));
+            AssignmentSubscription(StartCommand,    () => ServiceBaseHelpers.StartService(service));
+            AssignmentSubscription(StopCommand,     () => ServiceBaseHelpers.StopService(service));
+            AssignmentSubscription(PauseCommand,    () => ServiceBaseHelpers.PauseService(service));
             AssignmentSubscription(ContinueCommand, () => ServiceBaseHelpers.ContinueService(service));
-
         }
 
         private void AssignmentSubscription(ReactiveCommand command, Func<IObservable<ServiceState>> serviceOperation)
@@ -82,13 +77,11 @@ namespace ServiceProcess.Helpers.ViewModels
                         },
                         ex =>
                         {
-                            //TODO: show something more servicable than a MessageBox? Something that scrolls, maybe.
+                            //TODO: show something more serviceable than a MessageBox? Something that scrolls, maybe.
                             MessageBox.Show(ex.ToString());
                         }
                     )
             );
-            
         }
-
     }
 }

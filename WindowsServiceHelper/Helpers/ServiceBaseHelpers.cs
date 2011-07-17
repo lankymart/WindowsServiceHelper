@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.ServiceProcess;
-using System.Reactive;
-using System.Reflection;
-using ServiceProcess.Helpers.ViewModels;
-using System.Reactive.Subjects;
-using System.Threading.Tasks;
-using System.Reactive.Threading.Tasks;
 using System.Reactive.Linq;
-using System.Threading;
-using System.Reactive.Concurrency;
+using System.Reactive.Subjects;
+using System.Reflection;
+using System.ServiceProcess;
+using ServiceProcess.Helpers.ViewModels;
 
 namespace ServiceProcess.Helpers.Helpers
 {
@@ -32,7 +24,6 @@ namespace ServiceProcess.Helpers.Helpers
             public ServiceState FinishedState { get; set; }
             public ServiceState ErrorState { get; set; }
         }
-
 
         internal static IObservable<ServiceState> StartService(ServiceBase service)
         {
@@ -78,7 +69,6 @@ namespace ServiceProcess.Helpers.Helpers
                     }
                 });
 
-
             methodObs.Subscribe
                 (
                     _ =>
@@ -96,6 +86,5 @@ namespace ServiceProcess.Helpers.Helpers
 
             return result;
         }
-
     }
 }
