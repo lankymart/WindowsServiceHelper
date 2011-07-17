@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using ReactiveUI;
-using System.ServiceProcess;
-using ReactiveUI.Xaml;
 using System.Reactive.Linq;
+using ReactiveUI;
+using ReactiveUI.Xaml;
 
 namespace ServiceProcess.Helpers.ViewModels
 {
@@ -26,8 +24,6 @@ namespace ServiceProcess.Helpers.ViewModels
 
         public ServicesControllerViewModel(IEnumerable<ServiceViewModel> serviceViewModels)
         {
-            Services = serviceViewModels;
-            
             var selectedServiceObs = this.ObservableForProperty(x => x.SelectedService).Value();
 
             //Combine the latest value from either the start or continue executes
@@ -36,41 +32,37 @@ namespace ServiceProcess.Helpers.ViewModels
             (
                 selectedServiceObs.SelectMany
                 (
-                    s => s.StartCommand.CanExecuteObservable
+                    s => s.StartCommand.CanExecuteObservable.StartWith(true)
                         .CombineLatest
                         (
-                            s.ContinueCommand.CanExecuteObservable, 
+                            s.ContinueCommand.CanExecuteObservable.StartWith(false), 
                             (l,r) => l || r
                         )
                 )
             );
 
-            StopCommand = new ReactiveCommand(selectedServiceObs.SelectMany(s => s.StopCommand.CanExecuteObservable));
-            PauseCommand = new ReactiveCommand(selectedServiceObs.SelectMany(s => s.PauseCommand.CanExecuteObservable));
+            StopCommand = new ReactiveCommand(selectedServiceObs.SelectMany(s => s.StopCommand.CanExecuteObservable).StartWith(false));
+            PauseCommand = new ReactiveCommand(selectedServiceObs.SelectMany(s => s.PauseCommand.CanExecuteObservable).StartWith(false));
 
-            //TODO: create an observable that returns the play or continue command (or null) depending on the situation
-            //That ternary is pretty ugly
-            StartCommand.Subscribe
-            (
-                _ =>
-                {
-                    var command = (SelectedService.StartCommand.CanExecute(null) ? 
-                                    SelectedService.StartCommand : 
-                                    SelectedService.ContinueCommand.CanExecute(null) ? 
-                                        SelectedService.ContinueCommand : 
-                                        null);
-                    if (command != null)
+            StartCommand
+                .SelectMany
+                (
+                    _ => new ReactiveCommand[]
                     {
-                        command.Execute(null);
+                        _SelectedService.StartCommand, 
+                        _SelectedService.ContinueCommand
                     }
-                }
-            );
+                    .Where(cmd => cmd.CanExecute(null))
+                    .ToObservable()
+                )
+                .Do(cmd => cmd.Execute(null))
+                .Subscribe();
 
             StopCommand.Subscribe(_ => SelectedService.StopCommand.Execute(null));
             PauseCommand.Subscribe(_ => SelectedService.PauseCommand.Execute(null));
 
+            Services = serviceViewModels;
             SelectedService = Services.FirstOrDefault();
         }
-        
     }
 }
