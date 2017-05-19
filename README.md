@@ -3,8 +3,6 @@
 > Original project by [andersonimes](https://github.com/andersonimes) this is just a clone taken from [CodePlex](https://windowsservicehelper.codeplex.com/).
 > All attempts have been made to provide the correct attribution and licensing.
 
----
-
 ## What is Service Helper
 
 Being someone who writes Windows Services a lot, it can be frustrating to deal with the headaches involved in debugging services. Often it involves tricks, hacks, and partial workarounds to test all of your code. There is no "just hit F5" experience for Windows Services developers.
