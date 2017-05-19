@@ -23,7 +23,7 @@ Simply make a few changes to the typical code in the "Program.cs" for your appli
 using System.ServiceProcess;
 using ServiceProcess.Helpers; //HERE
 
-```
+```C#
 namespace DemoService
 {
     static class Program
