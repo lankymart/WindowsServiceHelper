@@ -17,13 +17,14 @@ Just hit F5, and this UI automatically appears. If there is no debugger attached
 
 ## How to use?
 
-The easiest way to get Windows Service Helper in your project is to use the NuGet package ServiceProcess.Helpers on the NuGet official feed.
+The easiest way to get Windows Service Helper in your project is to use the NuGet package [ServiceProcess.Helpers](http://nuget.org/List/Packages/ServiceProcess.Helpers) on the NuGet official feed.
 
 Simply make a few changes to the typical code in the "Program.cs" for your application:
+
+```C#
 using System.ServiceProcess;
 using ServiceProcess.Helpers; //HERE
 
-```C#
 namespace DemoService
 {
     static class Program
