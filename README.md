@@ -9,7 +9,7 @@ Being someone who writes Windows Services a lot, it can be frustrating to deal w
 
 Service Helper solves this by triggering a UI to be shown if a debugger is attached that simulates (as closely as possible) the Windows Services Environment.
 
-![Image of GUI](WindowsServiceHelper/bc788628-2cac-4300-8011-2ea4f125c945.png)
+![Image of GUI](https://github.com/lankymart/WindowsServiceHelper/blob/master/bc788628-2cac-4300-8011-2ea4f125c945.png)
 
 Just hit F5, and this UI automatically appears. If there is no debugger attached, your service will execute as normal and can be installed in the Windows Services system.
 
